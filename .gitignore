@@ -1,6 +1,6 @@
 /.vscode
 /bower.json
-/dist
+#/dist
 /node_modules
 /package-lock.json
 .DS_Store
