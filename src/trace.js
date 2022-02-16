@@ -42,7 +42,7 @@ export default {
 
     var xScaleType = chart.config.options.scales.x.type
 
-    if (xScaleType !== 'linear' && xScaleType !== 'time' && xScaleType !== 'category' && xScaleType !== 'logarithmic') {
+    if (xScaleType !== 'linear' && xScaleType !== 'time' && xScaleType !== 'category' && xScaleType !== 'logarithmic' && xScaleType !== 'timeseries') {
       return;
     }
 
@@ -115,7 +115,7 @@ export default {
   },
 
   getOption: function(chart, category, name) {
-    return valueOrDefault(chart.options.plugins.crosshair[category] ? chart.options.plugins.crosshair[category][name] : undefined, defaultOptions[category][name]);
+    return valueOrDefault(chart.config.options.plugins.crosshair[category] ? chart.config.options.plugins.crosshair[category][name] : undefined, defaultOptions[category][name]);
   },
 
   getXScale: function(chart) {
@@ -151,14 +151,16 @@ export default {
       buttons = 0;
     }
 
+    var eventType = e.original.type == "click" ? "mousemove" : e.original.type; // do not transmit click events to prevent unwanted changing of synced charts. We do need to transmit a event to stop zooming on synced charts however.
 
     var newEvent = {
-      type: e.original.type == "click" ? "mousemove" : e.original.type,  // do not transmit click events to prevent unwanted changing of synced charts. We do need to transmit a event to stop zooming on synced charts however.
+      type: eventType,
       chart: chart,
       x: xScale.getPixelForValue(e.xValue),
       y: e.original.y,
       native: {
-        buttons: buttons
+        buttons: buttons,
+        type: eventType
       },
       stop: true
     };
@@ -175,7 +177,7 @@ export default {
 
     var xScaleType = chart.config.options.scales.x.type
 
-    if (xScaleType !== 'linear' && xScaleType !== 'time' && xScaleType !== 'category' && xscaleType !== 'logarithmic') {
+    if (xScaleType !== 'linear' && xScaleType !== 'time' && xScaleType !== 'category' && xScaleType !== 'logarithmic' && xScaleType !== 'timeseries') {
       return;
     }
 
@@ -400,7 +402,7 @@ export default {
 
           var oldData = sourceDataset[oldDataIndex];
           // var oldDataX = this.getXScale(chart).getRightValue(oldData)
-          var oldDataX = oldData.x !== undefined ? oldData.x : NaN
+          var oldDataX = oldData.x !== undefined ? oldData.x : NaN;
 
           // append one value outside of bounds
           if (oldDataX >= start && !started && index > 0) {
@@ -431,7 +433,7 @@ export default {
       chart.crosshair.max = xAxes.max;
     }
 
-    chart.crosshair.ignoreNextEvents = 2 // ignore next 2 events to prevent starting a new zoom action after updating the chart
+    chart.crosshair.ignoreNextEvents = 2; // ignore next 2 events to prevent starting a new zoom action after updating the chart
 
     chart.update('none');
 
