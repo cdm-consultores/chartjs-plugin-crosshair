@@ -220,7 +220,11 @@ var TracePlugin = {
   },
 
   getOption: function(chart, category, name) {
-    return helpers.valueOrDefault(chart.config.options.plugins.crosshair[category] ? chart.config.options.plugins.crosshair[category][name] : undefined, defaultOptions[category][name]);
+    if (chart.options.plugins.crosshair && chart.options.plugins.crosshair[category]) {
+      return helpers.valueOrDefault(chart.options.plugins.crosshair[category][name], defaultOptions[category][name]);
+    } else {
+      return defaultOptions[category][name];
+    }
   },
 
   getXScale: function(chart) {
@@ -484,11 +488,9 @@ var TracePlugin = {
 
     var storeOriginals = (chart.crosshair.originalData.length === 0) ? true : false;
 
-
     var filterDataset = (chart.config.options.scales.x.type !== 'category');
 
     if(filterDataset) {
-
 
       for (var datasetIndex = 0; datasetIndex < chart.data.datasets.length; datasetIndex++) {
 
@@ -531,7 +533,6 @@ var TracePlugin = {
     chart.crosshair.start = start;
     chart.crosshair.end = end;
 
-
     if (storeOriginals) {
       var xAxes = this.getXScale(chart);
       chart.crosshair.min = xAxes.min;
@@ -542,8 +543,7 @@ var TracePlugin = {
 
     chart.update('none');
 
-
-    var afterZoomCallback = this.getOption(chart, 'callbacks', 'afterZoom');
+    var afterZoomCallback = helpers.valueOrDefault(chart.options.plugins.crosshair.callbacks ? chart.options.plugins.crosshair.callbacks.afterZoom : undefined, defaultOptions.callbacks.afterZoom);
 
     afterZoomCallback(start, end);
   },
