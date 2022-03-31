@@ -532,11 +532,11 @@ var CrosshairPlugin = {
 
     chart.crosshair.ignoreNextEvents = 2; // ignore next 2 events to prevent starting a new zoom action after updating the chart
 
-    chart.update('none');
-
     var afterZoomCallback = valueOrDefault(chart.options.plugins.crosshair.callbacks ? chart.options.plugins.crosshair.callbacks.afterZoom : undefined, defaultOptions.callbacks.afterZoom);
 
     afterZoomCallback(start, end);
+
+    chart.update('none');
   },
 
   drawZoombox: function(chart) {
