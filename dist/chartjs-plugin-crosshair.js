@@ -277,8 +277,7 @@ var TracePlugin = {
   },
 
   afterEvent: function(chart, event) {
-
-    if (chart.config.options.scales.x.length == 0) {
+    if (!chart.crosshair || chart.config.options.scales.x.length == 0) {
       return
     }
 
@@ -367,8 +366,7 @@ var TracePlugin = {
   },
 
   afterDraw: function(chart) {
-
-    if (!chart.crosshair.enabled) {
+    if (!chart.crosshair || !chart.crosshair.enabled) {
       return;
     }
 
@@ -384,6 +382,10 @@ var TracePlugin = {
   },
 
   beforeTooltipDraw: function(chart) {
+    if (!chart.crosshair) {
+      return;
+    }
+
     // suppress tooltips on dragging
     return !chart.crosshair.dragStarted && !chart.crosshair.suppressTooltips;
   },

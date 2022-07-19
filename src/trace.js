@@ -172,8 +172,7 @@ export default {
   },
 
   afterEvent: function(chart, event) {
-
-    if (chart.config.options.scales.x.length == 0) {
+    if (!chart.crosshair || chart.config.options.scales.x.length == 0) {
       return
     }
 
@@ -262,8 +261,7 @@ export default {
   },
 
   afterDraw: function(chart) {
-
-    if (!chart.crosshair.enabled) {
+    if (!chart.crosshair || !chart.crosshair.enabled) {
       return;
     }
 
@@ -279,6 +277,10 @@ export default {
   },
 
   beforeTooltipDraw: function(chart) {
+    if (!chart.crosshair) {
+      return;
+    }
+
     // suppress tooltips on dragging
     return !chart.crosshair.dragStarted && !chart.crosshair.suppressTooltips;
   },
